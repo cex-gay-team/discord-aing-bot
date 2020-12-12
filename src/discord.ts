@@ -15,7 +15,7 @@ export default (clientToken: string) => {
     token: in keyFile. keyFile is encrypted with PIN code
      */
 
-    client.on('message', async msg => {
+    client.on('message', async (msg) => {
         if (msg.content === 'ping') {
             await msg.reply('Pong!');
             await msg.channel.send('PongPong Gay YA!');
@@ -27,4 +27,4 @@ export default (clientToken: string) => {
     });
 
     client.login(clientToken);
-}
+};

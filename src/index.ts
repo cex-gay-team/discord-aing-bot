@@ -25,7 +25,7 @@ function decipherBotToken() {
     }
 
     const derivationKey = crypto.pbkdf2Sync(pin, Buffer.from('salt'), 4096, 16, 'sha256');
-    const secretKey = crypto.createSecretKey(derivationKey)
+    const secretKey = crypto.createSecretKey(derivationKey);
     const keyFile = fs.readFileSync(keyFilePath).toString();
     const cipherTag = fs.readFileSync(tagFilePath);
 
