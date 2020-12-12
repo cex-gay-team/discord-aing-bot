@@ -3,6 +3,7 @@ import {promisify} from 'util';
 import path from 'path';
 import type {Message} from 'discord.js';
 import type BaseCommand from '@commands/base/BaseCommand';
+import {MessageValidator} from '@validators/base/BaseValidator';
 
 const glob = promisify(_glob);
 const PREFIX_LENGTH_LIMIT = 3; // prefix 가 너무 길면 좀 그렇잖아
@@ -45,11 +46,28 @@ class MessageGateway {
         return modules; // for test
     }
 
-    public handleMessage(message: Message) {
+    public async handleMessage(message: Message) {
         if (message.content.startsWith(this.prefix)) {
             const command = this.commands[message.content.slice(1)];
-            command?.execute(message);
+            if (command) {
+                const chainCompleted = await this.processValidatorChain(message, command.validators);
+                chainCompleted && command.execute(message);
+            }
         }
+    }
+
+    private async processValidatorChain(target: Message, validators: MessageValidator[]): Promise<boolean> {
+        for (let i = 0 ; i < validators.length ; i++) {
+            const validator = validators[i];
+            const validationResult = await new Promise<boolean>((resolve) => {
+                validator.validate(target).then(resolve);
+            });
+
+            if (!validationResult) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
