@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import MessageGateway from './core/MessageGateway';
+import MessageGateway from '@core/MessageGateway';
 
 const client = new Discord.Client();
 export default (clientToken: string) => {

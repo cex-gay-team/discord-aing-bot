@@ -1,9 +1,8 @@
-import fse from 'fs-extra';
 import _glob from 'glob';
 import {promisify} from 'util';
 import path from 'path';
 import type {Message} from 'discord.js';
-import type BaseCommand from '../commands/base/BaseCommand';
+import type BaseCommand from '@commands/base/BaseCommand';
 
 const glob = promisify(_glob);
 const PREFIX_LENGTH_LIMIT = 3; // prefix 가 너무 길면 좀 그렇잖아
@@ -34,6 +33,8 @@ class MessageGateway {
     public async initializeCommand() {
         const commandsDirPathGlob = path.join(__dirname, '../commands', '*.ts');
         const modulePaths = await glob(commandsDirPathGlob);
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const esModules = await Promise.all(modulePaths.map<any>((modulePath) => import(modulePath)));
         const modules: BaseCommand[] = esModules.map((esModule) => esModule.default);
 
