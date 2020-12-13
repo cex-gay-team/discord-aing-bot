@@ -40,7 +40,13 @@ class MessageGateway {
         const modules: BaseCommand[] = esModules.map((esModule) => esModule.default);
 
         modules.forEach((commandModule) => {
-            this.commands[commandModule.command] = commandModule;
+            if (Array.isArray(commandModule.command)) {
+                commandModule.command.forEach((eachCommand) => {
+                    this.commands[eachCommand] = commandModule;
+                });
+            } else {
+                this.commands[commandModule.command] = commandModule;
+            }
         });
 
         return modules; // for test
