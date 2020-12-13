@@ -4,21 +4,35 @@
         "node": true
     },
     "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
+        "eslint:recommended"
     ],
-    "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
-    "plugins": [
-        "@typescript-eslint"
-    ],
     "rules": {
-        "@typescript-eslint/explicit-module-boundary-types": "off",
         "arrow-parens": "error",
         "semi": "error",
-        "quotes": ["warn", "single"]
-    }
+        "quotes": [
+            "warn",
+            "single"
+        ]
+    },
+    "overrides": [
+        {
+            "files": [
+                "*.ts"
+            ],
+            "plugins": [
+                "@typescript-eslint"
+            ],
+            "parser": "@typescript-eslint/parser",
+            "extends": [
+                "plugin:@typescript-eslint/recommended"
+            ],
+            "rules": {
+                "@typescript-eslint/explicit-module-boundary-types": "off"
+            }
+        }
+    ]
 }

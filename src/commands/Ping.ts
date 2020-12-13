@@ -1,8 +1,8 @@
-import BaseCommand from './base/BaseCommand';
+import {IBaseCommand} from './base/BaseCommand';
 import {Message} from 'discord.js';
 import UserValidator from '@validators/UserValidator';
 
-class Ping extends BaseCommand {
+class Ping implements IBaseCommand {
     command = 'ping';
     validators = [new UserValidator('extracold1209')];
 

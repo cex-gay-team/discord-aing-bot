@@ -1,5 +1,4 @@
 import MessageGateway from './MessageGateway';
-import BaseCommand from '../commands/base/BaseCommand';
 
 describe('MessageGateway', function() {
     /*
@@ -7,11 +6,12 @@ describe('MessageGateway', function() {
      */
     test('initialize', async function() {
         const messageGateway = new MessageGateway();
-        const modules: any[] = await messageGateway.initializeCommand();
+        const modules: unknown[] = await messageGateway.initializeCommand();
 
         expect(modules).toBeInstanceOf(Array);
         modules.forEach((module) => {
             expect(module).toHaveProperty('command');
+            expect(module).toHaveProperty('validators');
             expect(module).toHaveProperty('execute');
         });
     });

@@ -1,4 +1,4 @@
-import BaseCommand from './base/BaseCommand';
+import {IBaseCommand} from './base/BaseCommand';
 import TimeService from '@services/TimeService';
 import type {Message} from 'discord.js';
 import NotSupportCommandError from '@errors/NotSupportCommandError';
@@ -12,8 +12,9 @@ type TimerCommands = {
 type StartTimerCommand = Required<Pick<TimerCommands, 'timeout'>> & Omit<TimerCommands, 'type'>;
 type StopTimerCommand = Omit<TimerCommands, 'type' | 'timeout'>;
 
-class Timer extends BaseCommand {
+class Timer implements IBaseCommand {
     command = 'timer';
+    validators = [];
     private supportSubCommands = ['start', 'stop'];
 
     /*
