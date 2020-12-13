@@ -48,16 +48,22 @@ class MessageGateway {
 
     public async handleMessage(message: Message) {
         if (message.content.startsWith(this.prefix)) {
-            const command = this.commands[message.content.slice(1)];
+            const [commandMessage] = message.content.slice(this.prefix.length).split(' ');
+            const command = this.commands[commandMessage];
             if (command) {
-                const chainCompleted = await this.processValidatorChain(message, command.validators);
-                chainCompleted && command.execute(message);
+                try {
+                    const nonPrefixMessage = this.getNonPrefixMessage(message);
+                    const chainCompleted = await this.processValidatorChain(nonPrefixMessage, command.validators);
+                    chainCompleted && (await command.execute(nonPrefixMessage));
+                } catch (e) {
+                    message.reply(e.message);
+                }
             }
         }
     }
 
     private async processValidatorChain(target: Message, validators: MessageValidator[]): Promise<boolean> {
-        for (let i = 0 ; i < validators.length ; i++) {
+        for (let i = 0; i < validators.length; i++) {
             const validator = validators[i];
             const validationResult = await new Promise<boolean>((resolve) => {
                 validator.validate(target).then(resolve);
@@ -68,6 +74,12 @@ class MessageGateway {
             }
         }
         return true;
+    }
+
+    // 실제로 데이터는 call by reference 라 원본도 바뀌겠지만, 이 로직 이후 prefix 를 통한 사용은 없어야한다.
+    private getNonPrefixMessage(message: Message) {
+        message.content = message.content.slice(this.prefix.length);
+        return message;
     }
 }
 
