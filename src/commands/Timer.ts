@@ -44,8 +44,13 @@ class Timer extends BaseCommand {
     }
 
     private stopTimer(message: Message, timerInfo: StopTimerCommand) {
-        TimeService.clearTimer(message.author.username, timerInfo.timerName);
-        message.reply(`${this.formatTimerName(timerInfo.timerName)}타이머를 종료했습니다.`);
+        const timerCleared = TimeService.clearTimer(message.author.username, timerInfo.timerName);
+
+        if (timerCleared) {
+            message.reply(`${this.formatTimerName(timerInfo.timerName)}타이머를 종료했습니다.`);
+        } else {
+            message.reply('그런 타이머는 실행된 적이 없습니다.');
+        }
     }
 
     private parseMessage(content: string): TimerCommands {

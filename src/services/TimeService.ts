@@ -15,12 +15,23 @@ export default new class TimeService {
         } = info;
 
         !this.timers[username] && (this.timers[username] = {});
+        this.clearTimer(username, timerName);
         this.timers[username][timerName] = setTimeout(callback, timeout * SECOND);
     }
 
-    clearTimer(username: string, timerName = 'default') {
+    /**
+     * @return 타이머가 존재했는지에 대한 여부
+     */
+    clearTimer(username: string, timerName = 'default'): boolean {
         !this.timers[username] && (this.timers[username] = {});
         const targetTimer = this.timers[username][timerName];
-        targetTimer && clearTimeout(targetTimer);
+
+        if (targetTimer) {
+            clearTimeout(targetTimer);
+            delete this.timers[username][timerName];
+            return true;
+        } else {
+            return false;
+        }
     }
 }();
