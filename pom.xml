@@ -166,6 +166,9 @@
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
                     <version>3.2.2</version>
+                    <configuration>
+                        <warSourceDirectory>${basedir}/web</warSourceDirectory>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
@@ -190,6 +193,12 @@
                     <include>**/*Mapper.xml</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*Mapper.xml</include>
+                </includes>
+            </resource>
         </resources>
     </build>
     <profiles>
@@ -201,6 +210,7 @@
             <properties>
                 <env>local</env>
                 <deploy-path>deploy</deploy-path>
+                <basedir>/</basedir>
             </properties>
         </profile>
         <profile>
@@ -208,6 +218,7 @@
             <properties>
                 <env>alpha</env>
                 <deploy-path>deploy</deploy-path>
+                <basedir>/</basedir>
             </properties>
         </profile>
         <profile>
@@ -215,6 +226,7 @@
             <properties>
                 <env>release</env>
                 <deploy-path>deploy</deploy-path>
+                <basedir>/</basedir>
             </properties>
         </profile>
     </profiles>

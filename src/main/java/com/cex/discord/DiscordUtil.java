@@ -8,7 +8,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public class DiscordUtil {
     private static final String[] INVALID_CHANNEL_NAMES = {"PRIVATE"};
-    private static final String[] COMMAND_NAMES = {"rod", "ping", "bait", "location", "fishing", "buy", "sell"};
+    public static final String[] COMMAND_NAMES = {"rod", "ping", "bait", "location", "fishing", "buy", "sell", "help"};
     public static final int PREFIX_LENGTH = 1;
 
     private DiscordUtil() {
@@ -45,6 +45,6 @@ public class DiscordUtil {
     }
 
     public String getCommand(String contentRaw) {
-        return contentRaw.substring(PREFIX_LENGTH, PREFIX_LENGTH + 1).toUpperCase() + contentRaw.substring(PREFIX_LENGTH + 1).toLowerCase();
+        return contentRaw.split(" ")[0].substring(PREFIX_LENGTH, PREFIX_LENGTH + 1).toUpperCase() + contentRaw.split(" ")[0].substring(PREFIX_LENGTH + 1).toLowerCase();
     }
 }

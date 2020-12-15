@@ -3,11 +3,13 @@ package com.cex.common.security.dataCryptor;
 import com.cex.common.security.cipher.CipherCreator;
 import com.cex.common.security.cipher.DataCipher;
 import com.cex.common.security.DataEncryptorUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component("mysqlDataCryptor")
+@Slf4j
 public class MysqlDataCryptorImpl implements DataCryptor {
     private static final String CHARSET_NAME = "UTF-8";
 
@@ -25,7 +27,7 @@ public class MysqlDataCryptorImpl implements DataCryptor {
             byte[] byteResult = dataCipher.doFinal(data.getBytes(CHARSET_NAME));
             result = DataEncryptorUtil.getEncryptStringData(byteResult);
         } catch (Exception exception) {
-
+            log.error("Mysql DataCryptor encrypt fail data : {0}", data ,exception);
         }
 
         return result;
@@ -39,7 +41,7 @@ public class MysqlDataCryptorImpl implements DataCryptor {
             DataCipher dataCipher = cipherCreator.createDecryptCipher(mysqlDbKey);
             result = new String(dataCipher.doFinal(decipherBytes), CHARSET_NAME);
         } catch (Exception exception) {
-
+            log.error("Mysql DataCryptor decrypt fail data : {0}", data ,exception);
         }
 
         return result;
