@@ -2,7 +2,7 @@ package com.cex.config;
 
 import com.cex.common.security.dataCryptor.DataCryptor;
 import com.cex.common.security.dataCryptor.DiscordDataCryptorImpl;
-import com.cex.discord.DiscordBotListener;
+import com.cex.common.listener.DiscordBotListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;

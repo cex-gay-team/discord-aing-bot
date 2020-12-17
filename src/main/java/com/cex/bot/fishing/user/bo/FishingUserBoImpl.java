@@ -26,15 +26,25 @@ public class FishingUserBoImpl implements FishingUserBo {
             user.setUserStatus(UserStatus.SIGN_UP);
 
             fishingUserMapper.insertUser(user);
-        } else {
-
         }
         
         return user;
     }
 
+
+
     @Override
     public void updateFishingUserStatus(FishingUser fishingUser) {
         fishingUserMapper.updateUserStatus(fishingUser);
+    }
+
+    @Override
+    public FishingUser getFishingUserByDiscordId(long discordId) {
+        return fishingUserMapper.selectFishingUser(discordId);
+    }
+
+    @Override
+    public void modifyUserItem(FishingUser fishingUser) {
+        fishingUserMapper.updateUserItem(fishingUser);
     }
 }

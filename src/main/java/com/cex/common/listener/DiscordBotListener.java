@@ -1,16 +1,23 @@
-package com.cex.discord;
+package com.cex.common.listener;
 
+import com.cex.bot.fishing.location.bo.LocationBo;
+import com.cex.bot.fishing.location.model.Location;
 import com.cex.bot.fishing.user.bo.FishingUserBo;
 import com.cex.bot.fishing.command.DiscordBaseCommand;
 import com.cex.bot.fishing.user.model.FishingUser;
 import com.cex.bot.fishing.user.model.UserStatus;
+import com.cex.common.util.DiscordUtil;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class DiscordBotListener extends ListenerAdapter {
@@ -28,16 +35,18 @@ public class DiscordBotListener extends ListenerAdapter {
     @Autowired
     private FishingUserBo fishingUserBo;
 
+    @Autowired
+    private LocationBo locationBo;
 
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         DiscordUtil discordUtil = DiscordUtil.getInstance();
-        if (discordUtil.isCommand(event)) {
+        if (discordUtil.isCommand(event) && isFishingLocations(event.getTextChannel())) {
             DiscordBaseCommand command;
             FishingUser fishingUser = fishingUserBo.getFishingUserStatus(event.getAuthor());
 
-            if(fishingUser.getUserStatus() == UserStatus.WAIT) {
+            if (fishingUser.getUserStatus() == UserStatus.WAIT) {
                 String commandName = discordUtil.getCommand(event.getMessage().getContentRaw());
                 command = commandMap.getOrDefault(COMMAND_PREFIX + commandName + COMMAND_POSTFIX, fishingBotNotCommand);
                 command.execute(event);
@@ -48,9 +57,25 @@ public class DiscordBotListener extends ListenerAdapter {
                 fishingUser.setUserStatus(UserStatus.WAIT);
                 fishingUserBo.updateFishingUserStatus(fishingUser);
             } else {
-                event.getTextChannel().sendMessage(event.getAuthor().getAsMention() +  "님. 현재 낚시중 상태이십니다. 낚시 완료 후 요청해주세요.").queue();
+                event.getTextChannel().sendMessage(event.getAuthor().getAsMention() + "님. 현재 낚시중 상태이십니다. 낚시 완료 후 요청해주세요.").queue();
             }
 
         }
+    }
+
+    private boolean isFishingLocations(TextChannel textChannel) {
+        List<Location> fishingLocations = locationBo.getLocationList();
+        JDA jda = textChannel.getJDA();
+        boolean isFishingLocation = fishingLocations.stream()
+                .anyMatch(location -> location.getDiscordId() == textChannel.getIdLong());
+        if (!isFishingLocation) {
+            textChannel.sendMessage("여기서는 낚시봇을 사용할수 없습니다. 아래 해당 채널에서 시도해주세요.").queue();
+            for(Location location : fishingLocations) {
+                textChannel.sendMessage(jda.getTextChannelById(location.getDiscordId()).getAsMention() + " 난이도 : " + location.getLevel()).queue();
+            }
+
+        }
+
+        return isFishingLocation;
     }
 }

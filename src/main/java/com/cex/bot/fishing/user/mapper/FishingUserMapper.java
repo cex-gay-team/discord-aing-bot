@@ -12,4 +12,9 @@ public interface FishingUserMapper {
     void insertUser(FishingUser fishingUser);
 
     void updateUserStatus(FishingUser fishingUser);
+
+    FishingUser selectFishingUser(long discordId);
+
+    void updateUserCoin(FishingUser fishingUser);
+    void updateUserItem(FishingUser fishingUser);
 }

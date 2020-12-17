@@ -24,7 +24,7 @@
           #{userName}
         , #{coin}
         , #{rodId}
-        , #{batisId}
+        , #{baitsId}
         , #{userStatus}
         , #{discordId}
         )
@@ -33,6 +33,31 @@
     <update id="updateUserStatus" parameterType="com.cex.bot.fishing.user.model.FishingUser">
         UPDATE users
            SET status = #{userStatus}
+         WHERE id = #{userId}
+    </update>
+
+    <select id="selectFishingUser" parameterType="long" resultType="com.cex.bot.fishing.user.model.FishingUser">
+     SELECT id AS userId
+          , name AS userName
+          , status AS userStatus
+          , discord_id AS discordId
+          , coin AS coin
+          , rod_id AS rodId
+          , bait_id AS baitsId
+       FROM users users
+      WHERE discord_id = #{discordId}
+    </select>
+
+    <update id="updateUserCoin" parameterType="com.cex.bot.fishing.user.model.FishingUser">
+        UPDATE users
+           SET coin = #{coin}
+         WHERE id = #{userId}
+    </update>
+
+    <update id="updateUserItem" parameterType="com.cex.bot.fishing.user.model.FishingUser">
+        UPDATE users
+           SET rod_id = #{rodId}
+             , bait_id = #{baitsId}
          WHERE id = #{userId}
     </update>
 </mapper>

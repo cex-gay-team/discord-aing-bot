@@ -1,10 +1,13 @@
-package com.cex.discord;
+package com.cex.common.util;
 
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 public class DiscordUtil {
     private static final String[] INVALID_CHANNEL_NAMES = {"PRIVATE"};
@@ -46,5 +49,23 @@ public class DiscordUtil {
 
     public String getCommand(String contentRaw) {
         return contentRaw.split(" ")[0].substring(PREFIX_LENGTH, PREFIX_LENGTH + 1).toUpperCase() + contentRaw.split(" ")[0].substring(PREFIX_LENGTH + 1).toLowerCase();
+    }
+
+    public String[] parsingParam(String contentRaw, int langth) {
+
+        return Arrays.copyOfRange(contentRaw.split(" "), 1, langth);
+    }
+
+    public boolean isNumeric(String value) {
+        if(Objects.isNull(value)) {
+            return false;
+        }
+
+        try {
+            Integer.parseInt(value);
+        } catch (NumberFormatException exception) {
+            return false;
+        }
+        return true;
     }
 }
