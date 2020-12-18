@@ -17,4 +17,8 @@ public interface FishingUserMapper {
 
     void updateUserCoin(FishingUser fishingUser);
     void updateUserItem(FishingUser fishingUser);
+
+    boolean selectIsAttendanceToday(FishingUser fishingUser);
+
+    void updateUserAttendanceDate(FishingUser fishingUser);
 }

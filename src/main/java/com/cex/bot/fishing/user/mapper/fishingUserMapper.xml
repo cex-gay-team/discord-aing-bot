@@ -7,6 +7,7 @@
         SELECT id AS userId
              , status AS userStatus
              , discord_id AS discordId
+             , coin AS coin
           FROM users
          WHERE discord_id = #{discordId}
     </select>
@@ -58,6 +59,21 @@
         UPDATE users
            SET rod_id = #{rodId}
              , bait_id = #{baitsId}
+         WHERE id = #{userId}
+    </update>
+
+    <select id="selectIsAttendanceToday" parameterType="com.cex.bot.fishing.user.model.FishingUser" resultType="boolean">
+        SELECT CASE DATE_FORMAT(attendance_date,'%y%m%d')
+                 WHEN DATE_FORMAT(NOW(),'%y%m%d') THEN 1
+                 ELSE 0
+               END
+         FROM users
+        WHERE id = #{userId}
+    </select>
+
+    <update id="updateUserAttendanceDate" parameterType="com.cex.bot.fishing.user.model.FishingUser">
+        UPDATE users
+           SET attendance_date = NOW()
          WHERE id = #{userId}
     </update>
 </mapper>

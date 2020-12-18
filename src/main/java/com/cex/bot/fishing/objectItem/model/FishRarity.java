@@ -29,7 +29,8 @@ public enum FishRarity {
         this.probability = probability;
     }
 
-    public static FishRarity getRandomFishRarity(int randomProbability) { FishRarity rarity = FishRarity.D;
+    public static FishRarity getRandomFishRarity(int randomProbability) {
+        FishRarity rarity = FishRarity.D;
         for(FishRarity fishRarity : sortedFishRarity) {
             if(randomProbability < fishRarity.getProbability()) {
                 rarity = fishRarity;

@@ -22,4 +22,6 @@ public interface ObjectItemBo {
     String processBuyRodsItem(String itemNo, FishingUser fishingUser);
 
     void changeInventoryItem(InventoryItem currentItem, InventoryItem changeItem);
+
+    int sellItem(FishingUser fishingUser, InventoryItem inventoryNo);
 }

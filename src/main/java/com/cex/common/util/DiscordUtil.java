@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class DiscordUtil {
     private static final String[] INVALID_CHANNEL_NAMES = {"PRIVATE"};
-    public static final String[] COMMAND_NAMES = {"rod", "ping", "bait", "location", "fishing", "buy", "sell", "help"};
+    public static final String[] COMMAND_NAMES = {"rod", "ping", "bait", "location", "fishing", "buy", "sell", "help", "me"};
     public static final int PREFIX_LENGTH = 1;
 
     private DiscordUtil() {

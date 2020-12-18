@@ -11,6 +11,7 @@ import java.util.Objects;
 
 @Service
 public class FishingUserBoImpl implements FishingUserBo {
+    public static final int ATTENDANCE_COIN = 100;
     @Autowired
     private FishingUserMapper fishingUserMapper;
 
@@ -46,5 +47,18 @@ public class FishingUserBoImpl implements FishingUserBo {
     @Override
     public void modifyUserItem(FishingUser fishingUser) {
         fishingUserMapper.updateUserItem(fishingUser);
+    }
+
+    @Override
+    public boolean isAttendance(FishingUser fishingUser) {
+
+        return fishingUserMapper.selectIsAttendanceToday(fishingUser);
+    }
+
+    @Override
+    public void attendance(FishingUser fishingUser) {
+        fishingUser.setCoin(fishingUser.getCoin() + ATTENDANCE_COIN);
+        fishingUserMapper.updateUserCoin(fishingUser);
+        fishingUserMapper.updateUserAttendanceDate(fishingUser);
     }
 }

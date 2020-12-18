@@ -51,7 +51,7 @@ public class FishingAsyncExecutor {
                 discordSendUtil.sendMessage(fishingUser.getUserName() + "님; " + wait_count + "번째 시도!", locationId);
                 Thread.sleep(locationDelay * SECOND);
                 if (random.nextInt(LOCATION_RANDOM_MAX_RANGE) < locationLevel && wait_count < MAX_WAIT_COUNT) {
-                    discordSendUtil.sendMessage(fishingUser.getUserName() + "님; " + wait_count + "낚지 못했어유. 다시 시도할게요.", locationId);
+                    discordSendUtil.sendMessage(fishingUser.getUserName() + "님; 낚지 못했어유. 다시 시도할게요.", locationId);
                     wait_count++;
                 } else {
                     passWait = false;
@@ -87,7 +87,7 @@ public class FishingAsyncExecutor {
                     // 메시지 전송
                     discordSendUtil.sendMessage(fishingUser.getUserName() + "님; 낚시 결과 알려드려유;" + fishes.getName() + "을(를) 잡았어요!", locationId);
                     // 관련 사진 전송
-                    discordSendUtil.sendFile(fishes.getFileName(), locationId);
+//                    discordSendUtil.sendFile(fishes.getFileName(), locationId);
                 } else {
                     discordSendUtil.sendMessage(fishingUser.getUserName() + "님; 낚시 결과 알려드려유;" + fishes.getName() + "을(를) 낚을뻔 했는데,,, 실패!", locationId);
                 }

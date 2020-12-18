@@ -15,9 +15,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class DiscordBotListener extends ListenerAdapter {
@@ -45,7 +45,10 @@ public class DiscordBotListener extends ListenerAdapter {
         if (discordUtil.isCommand(event) && isFishingLocations(event.getTextChannel())) {
             DiscordBaseCommand command;
             FishingUser fishingUser = fishingUserBo.getFishingUserStatus(event.getAuthor());
-
+            if(!fishingUserBo.isAttendance(fishingUser)) {
+                fishingUserBo.attendance(fishingUser);
+                event.getTextChannel().sendMessage(event.getAuthor().getAsMention() + "님," + LocalDate.now() + " 출석 진행하셨습니다~\n").queue();
+            }
             if (fishingUser.getUserStatus() == UserStatus.WAIT) {
                 String commandName = discordUtil.getCommand(event.getMessage().getContentRaw());
                 command = commandMap.getOrDefault(COMMAND_PREFIX + commandName + COMMAND_POSTFIX, fishingBotNotCommand);

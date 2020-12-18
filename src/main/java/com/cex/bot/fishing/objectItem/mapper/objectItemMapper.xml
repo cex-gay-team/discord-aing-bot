@@ -147,4 +147,10 @@
            SET seq = #{inventoryNo}
          WHERE id = #{inventoryId}
     </update>
+
+    <delete id="deleteInventoryItem" parameterType="com.cex.bot.fishing.user.model.InventoryItem">
+        DELETE FROM users_object
+         WHERE id = #{inventoryId}
+           AND user_id = #{fishUserId}
+    </delete>
 </mapper>

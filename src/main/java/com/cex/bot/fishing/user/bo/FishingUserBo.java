@@ -10,4 +10,8 @@ public interface FishingUserBo {
     FishingUser getFishingUserByDiscordId(long discordId);
 
     void modifyUserItem(FishingUser fishingUser);
+
+    boolean isAttendance(FishingUser fishingUser);
+
+    void attendance(FishingUser fishingUser);
 }

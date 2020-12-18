@@ -33,4 +33,6 @@ public interface ObjectItemMapper {
     Rods selectRodsInfo(int itemNo);
 
     void updateInventoryItemNo(InventoryItem changeItem);
+
+    void deleteInventoryItem(InventoryItem inventoryItem);
 }

@@ -1,5 +1,6 @@
 package com.cex.bot.fishing.user.model;
 
+import com.cex.bot.fishing.objectItem.model.ObjectType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,4 +20,12 @@ public class InventoryItem {
     private float objectLength;
     private int count;
     private int inventoryNo;
+
+    public float getSellPrice() {
+        if(ObjectType.getObjectTypeByCode(this.objectType) == ObjectType.BAITS) {
+            return Math.round(this.objectPrice / 30.0f * (float)count);
+        } else {
+            return this.objectPrice;
+        }
+    }
 }

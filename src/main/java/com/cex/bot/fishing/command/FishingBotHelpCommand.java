@@ -19,6 +19,7 @@ public class FishingBotHelpCommand implements DiscordBaseCommand {
                 "!location 낚시터 정보를 보여줍니다!\n" +
                 "!buy [아이템타입] [아이템번호] 아이템을 구매합니다. 입력하지 않을 시 아이템 구매가능 목록을 보여줍니다\n" +
                 "!sell [인벤토리번호] 아이템을 판매합니다. 번호를 입력안하면 판매 가능 목록을 보여줍니다\n" +
+                "!me 장착한 장비. 보유한 아이템 목록을 보여줍니다.\n" +
                 "!help 도움말을 보여줍니다.";
         discordSendUtil.sendMessage(helpText, event.getTextChannel().getIdLong());
     }
