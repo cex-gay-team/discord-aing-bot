@@ -2,6 +2,7 @@ import {IBaseCommand} from './base/BaseCommand';
 import TimeService from '@services/TimeService';
 import type {Message} from 'discord.js';
 import NotSupportCommandError from '@errors/NotSupportCommandError';
+import formatDate from "../functions/formatDate";
 
 type TimerCommands = {
     type: string;
@@ -55,7 +56,7 @@ class Timer implements IBaseCommand {
     }
 
     private parseMessage(content: string): TimerCommands {
-        const [, type, arg1, arg2] = content.split(' ');
+        const [, type, maybeTimerName, ...args] = content.split(' ');
         const result: Partial<TimerCommands> = {};
 
         if (!this.supportSubCommands.includes(type)) {
@@ -65,19 +66,10 @@ class Timer implements IBaseCommand {
         }
         result.type = type;
 
-        const numArg1 = parseInt(arg1); // timerName or timeout
-        const numArg2 = parseInt(arg2); // timeout if arg1 is timerName
-        if (Number.isNaN(numArg1)) {
-            // arg1 이 문자열이라면, arg2 는 숫자만 가능하다.
-            result.timerName = arg1;
-
-            if (type === 'start' && !Number.isNaN(numArg2) && numArg2 >= 0) {
-                // arg2 는 type 이 start 일 경우에만 적용된다.
-                result.timeout = numArg2;
-            }
-        } else if (numArg1 >= 0) {
-            // arg1 이 숫자라면, 이 값은 timeout 이다.
-            result.timeout = numArg1;
+        if (Number.isNaN(parseInt(maybeTimerName))) {
+            result.timeout = formatDate(args);
+        } else {
+            result.timeout = formatDate([maybeTimerName, ...args]);
         }
 
         return result as TimerCommands;
@@ -85,6 +77,22 @@ class Timer implements IBaseCommand {
 
     private formatTimerName(timerName?: string) {
         return timerName ? `${timerName} ` : '';
+    }
+
+    /**
+     * 타이머 입력은 세가지 방식을 따른다.
+     *
+     * 1. 초만 입력하기
+     * 2. 1h, 2m, 3s 와 같이 세가지의 값을 입력하기 (어떤 조합도 가능하며, 무조건 순서는 hms 순이다.)
+     * 3. hh:mm:ss 로 입력하기
+     *
+     * @param args 위 셋중 하나
+     * @throws InvalidFormatError
+     * @private
+     */
+    private parseDateArgument(args: string[]): number {
+
+        return 0;
     }
 }
 

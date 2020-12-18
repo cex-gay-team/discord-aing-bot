@@ -22,8 +22,10 @@ export default (clientToken: string) => {
         console.log(`Logged in as ${client.user?.tag}!`);
     });
 
+    console.log('try login to discord...');
     client.login(clientToken).then(() => {
         // noinspection JSIgnoredPromiseFromCall
         messageGateway.initializeCommand();
+        console.log('discord messageGateway initialized');
     });
 };
