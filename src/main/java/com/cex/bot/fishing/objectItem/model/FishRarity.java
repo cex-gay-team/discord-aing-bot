@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 
 public enum FishRarity {
     SSS(1)
-    , SS(4)
-    , S(10)
-    , A(20)
-    , B(35)
-    , C(65)
-    , D(100);
+    , SS(3)
+    , S(6)
+    , A(10)
+    , B(15)
+    , C(30)
+    , D(35);
     private static final List<FishRarity> sortedFishRarity;
 
     static {
@@ -31,8 +31,10 @@ public enum FishRarity {
 
     public static FishRarity getRandomFishRarity(int randomProbability) {
         FishRarity rarity = FishRarity.D;
+        int probabilityRange = 0;
         for(FishRarity fishRarity : sortedFishRarity) {
-            if(randomProbability < fishRarity.getProbability()) {
+            probabilityRange += fishRarity.getProbability();;
+            if(randomProbability < probabilityRange) {
                 rarity = fishRarity;
                 break;
             }

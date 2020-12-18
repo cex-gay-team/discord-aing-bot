@@ -71,8 +71,8 @@ public class FishingAsyncExecutor {
 
                 float randomFishValue = (random.nextInt(100 + Math.round(rods.getWeightLimit() * 100)) + 50) * 0.01f;
 
-                float succesCalu = 1f - (rods.getEffect() + baits.getEffect()) * 0.01f;
-                if (random.nextFloat() > 1 - succesCalu) {
+                float succesCalu = 1f - Math.min((rods.getEffect() + baits.getEffect()) * 0.01f, 1f);
+                if (random.nextFloat() > succesCalu) {
                     InventoryItem inventoryItem = InventoryItem.builder()
                             .fishUserId(fishingUser.getUserId())
                             .objectName(fishes.getName())
@@ -82,14 +82,11 @@ public class FishingAsyncExecutor {
                             .objectPrice(fishes.getDefaultPrice() * randomFishValue)
                             .count(1)
                             .build();
-                    // 아이템을 저장하고
                     objectItemBo.saveItem(inventoryItem);
-                    // 메시지 전송
-                    discordSendUtil.sendMessage(fishingUser.getUserName() + "님; 낚시 결과 알려드려유;" + fishes.getName() + "을(를) 잡았어요!", locationId);
-                    // 관련 사진 전송
+                    discordSendUtil.sendMessage(fishingUser.getUserName() + "님; 낚시 결과 알려드려유;" + fishes.getName() + "(" +  fishes.getRarity() + ") 을(를) 잡았어요!", locationId);
 //                    discordSendUtil.sendFile(fishes.getFileName(), locationId);
                 } else {
-                    discordSendUtil.sendMessage(fishingUser.getUserName() + "님; 낚시 결과 알려드려유;" + fishes.getName() + "을(를) 낚을뻔 했는데,,, 실패!", locationId);
+                    discordSendUtil.sendMessage(fishingUser.getUserName() + "님; 낚시 결과 알려드려유;" + fishes.getName() + "(" +  fishes.getRarity() + ") 을(를) 낚을뻔 했는데,,, 실패!", locationId);
                 }
             }
             objectItemBo.useBatis(fishingUser);

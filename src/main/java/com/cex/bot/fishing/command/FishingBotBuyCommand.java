@@ -15,8 +15,8 @@ import java.util.Objects;
 
 @Service
 public class FishingBotBuyCommand implements DiscordBaseCommand {
-    private static final String[] BAIT_ARRAYS = {"미끼", "B", "BAITS"};
-    private static final String[] RODS_ARRAYS = {"낚시대", "R", "RODS"};
+    private static final String[] BAIT_ARRAYS = {"미끼", "B", "BAITS", "BAIT"};
+    private static final String[] RODS_ARRAYS = {"낚시대", "R", "RODS", "ROD"};
 
     @Autowired
     private DiscordSendUtil discordSendUtil;

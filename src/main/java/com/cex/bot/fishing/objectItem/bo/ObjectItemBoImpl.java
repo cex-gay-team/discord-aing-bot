@@ -18,6 +18,9 @@ import java.util.Objects;
 
 @Service
 public class ObjectItemBoImpl implements ObjectItemBo {
+    private static int NO_BAITS_ID = 0;
+    private static int NO_MOUNT_TYPE = 0;
+
     @Autowired
     private ObjectItemMapper objectItemMapper;
 
@@ -27,16 +30,15 @@ public class ObjectItemBoImpl implements ObjectItemBo {
     @Override
     public void saveItem(InventoryItem inventoryItem) {
         List<InventoryItem> myInventoryItems = objectItemMapper.selectMyInventoryItemList(inventoryItem.getFishUserId());
-        boolean findFlag = false;
+
         int searchCount = 3;
-        for(InventoryItem item : myInventoryItems) {
-            if (item.getInventoryNo() == 1 || item.getInventoryNo() == 2) {
-            } else if(item.getInventoryNo() != searchCount) {
-                findFlag = true;
+
+        for (InventoryItem item : myInventoryItems) {
+            if (item.getInventoryNo() != searchCount && item.getInventoryNo() > 2) {
                 break;
-            } else {
-                searchCount++;
             }
+
+            searchCount++;
         }
 
         inventoryItem.setInventoryNo(searchCount);
@@ -46,11 +48,11 @@ public class ObjectItemBoImpl implements ObjectItemBo {
 
     @Override
     public void useBatis(FishingUser fishingUser) {
-        if(fishingUser.getBaits().getCount() > 1) {
+        if (fishingUser.getBaits().getCount() > 1) {
             objectItemMapper.updateDecreaseBaitsItem(fishingUser.getBaits());
         } else {
             objectItemMapper.deleteBaitsItem(fishingUser.getBaits());
-            fishingUser.setBaitsId(0);
+            fishingUser.setBaitsId(NO_BAITS_ID);
             fishingUserMapper.updateUserItem(fishingUser);
         }
 
@@ -74,26 +76,26 @@ public class ObjectItemBoImpl implements ObjectItemBo {
     @Override
     @Transactional
     public String processBuyBaitsItem(String itemNoTypeString, FishingUser fishingUser) {
-        if(StringUtils.isEmpty(itemNoTypeString)) {
-            //구입할 수 있는 아이템 목록
-           List<Baits> baitsList = objectItemMapper.selectBatisInfoList();
-           StringBuilder message = new StringBuilder("상점내 미끼 목록 보여드려요.\n");
+        if (StringUtils.isEmpty(itemNoTypeString)) {
+            List<Baits> baitsList = objectItemMapper.selectBatisInfoList();
+            StringBuilder message = new StringBuilder("상점내 미끼 목록 보여드려요.\n");
+            message.append("No | 미끼명 | 가격\n");
 
-           for(Baits baits : baitsList) {
-               message.append(baits.getId() + " | " + baits.getName() + " | " + baits.getPrice() + "\n");
-           }
+            for (Baits baits : baitsList) {
+                message.append(baits.getId() + " | " + baits.getName() + " | " + baits.getPrice() + "\n");
+            }
 
-           return message.toString();
+            return message.toString();
         }
 
-        if(DiscordUtil.getInstance().isNumeric(itemNoTypeString)) {
+        if (DiscordUtil.getInstance().isNumeric(itemNoTypeString)) {
             int itemNo = Integer.parseInt(itemNoTypeString);
 
             Baits buyingBatis = objectItemMapper.selectBatisInfo(itemNo);
-            if(Objects.isNull(buyingBatis)) {
+            if (Objects.isNull(buyingBatis)) {
                 return fishingUser.getUserName() + "님, 해당 아이템 번호를 가진 미끼가 없네요^^ 다시 확인하고 요청하세요.";
 
-            } else if(fishingUser.getCoin() >= buyingBatis.getPrice()) {
+            } else if (fishingUser.getCoin() >= buyingBatis.getPrice()) {
                 InventoryItem item = InventoryItem.builder()
                         .fishUserId(fishingUser.getUserId())
                         .objectId(buyingBatis.getId())
@@ -107,38 +109,39 @@ public class ObjectItemBoImpl implements ObjectItemBo {
                 fishingUser.setCoin(fishingUser.getCoin() - buyingBatis.getPrice());
                 fishingUserMapper.updateUserCoin(fishingUser);
 
-                return fishingUser.getUserName() + "님, " +buyingBatis.getName() + "을 구입하셨습니다. 감사합니다! 남은 코인은 " + fishingUser.getCoin() + "입니다.";
+                return fishingUser.getUserName() + "님, " + buyingBatis.getName() + "을 구입하셨습니다. 감사합니다! 남은 코인은 " + fishingUser.getCoin() + "입니다.";
             } else {
-                return fishingUser.getUserName() + "님, 돈이 부족해요 현재 가진 코인은 " + fishingUser.getCoin() +"이고 "
+                return fishingUser.getUserName() + "님, 돈이 부족해요 현재 가진 코인은 " + fishingUser.getCoin() + "이고 "
                         + buyingBatis.getName() + "은 " + buyingBatis.getPrice() + "입니다. 돈을 좀더 모아보세요!";
             }
+
         } else {
-            //번호가 아니라 다른거 넣었으므로 경고 메세지
             return fishingUser.getUserName() + "님, 2번째에는 아이템 번호를 입력하셔야 해요!";
         }
     }
 
     @Override
     public String processBuyRodsItem(String itemNoTypeString, FishingUser fishingUser) {
-        if(StringUtils.isEmpty(itemNoTypeString)) {
+        if (StringUtils.isEmpty(itemNoTypeString)) {
             List<Rods> rodsList = objectItemMapper.selectRodsInfoList();
-            StringBuilder message = new StringBuilder("상정내 낚시대 목록 보여드려요.\n");
+            StringBuilder message = new StringBuilder("상점내 낚시대 목록 보여드려요.\n");
+            message.append("No | 낚시대명 | 가격\n");
 
-            for(Rods rod : rodsList) {
+            for (Rods rod : rodsList) {
                 message.append(rod.getId() + " | " + rod.getName() + " | " + rod.getPrice() + "\n");
             }
 
             return message.toString();
         }
 
-        if(DiscordUtil.getInstance().isNumeric(itemNoTypeString)) {
+        if (DiscordUtil.getInstance().isNumeric(itemNoTypeString)) {
             int itemNo = Integer.parseInt(itemNoTypeString);
 
             Rods buyingRods = objectItemMapper.selectRodsInfo(itemNo);
-            if(Objects.isNull(buyingRods)) {
+            if (Objects.isNull(buyingRods)) {
                 return fishingUser.getUserName() + "님, 해당 아이템 번호를 가진 낚시대가 없네요^^ 다시 확인하고 요청하세요.";
 
-            } else if(fishingUser.getCoin() >= buyingRods.getPrice()) {
+            } else if (fishingUser.getCoin() >= buyingRods.getPrice()) {
                 InventoryItem item = InventoryItem.builder()
                         .fishUserId(fishingUser.getUserId())
                         .objectId(buyingRods.getId())
@@ -152,9 +155,9 @@ public class ObjectItemBoImpl implements ObjectItemBo {
                 fishingUser.setCoin(fishingUser.getCoin() - buyingRods.getPrice());
                 fishingUserMapper.updateUserCoin(fishingUser);
 
-                return fishingUser.getUserName() + "님, " +buyingRods.getName() + "을 구입하셨습니다. 감사합니다! 남은 코인은 " + fishingUser.getCoin() + "입니다.";
+                return fishingUser.getUserName() + "님, " + buyingRods.getName() + "을 구입하셨습니다. 감사합니다! 남은 코인은 " + fishingUser.getCoin() + "입니다.";
             } else {
-                return fishingUser.getUserName() + "님, 돈이 부족해요 현재 가진 코인은 " + fishingUser.getCoin() +"이고 "
+                return fishingUser.getUserName() + "님, 돈이 부족해요 현재 가진 코인은 " + fishingUser.getCoin() + "이고 "
                         + buyingRods.getName() + "은 " + buyingRods.getPrice() + "입니다. 돈을 좀더 모아보세요!";
             }
         } else {
@@ -166,7 +169,7 @@ public class ObjectItemBoImpl implements ObjectItemBo {
     @Override
     @Transactional
     public void changeInventoryItem(InventoryItem currentItem, InventoryItem changeItem) {
-        if(currentItem.getInventoryId() == 0) {
+        if (currentItem.getInventoryId() == NO_MOUNT_TYPE) {
             changeItem.setInventoryNo(currentItem.getInventoryNo());
 
             objectItemMapper.updateInventoryItemNo(changeItem);
@@ -187,6 +190,7 @@ public class ObjectItemBoImpl implements ObjectItemBo {
         objectItemMapper.deleteInventoryItem(inventoryItem);
         fishingUser.setCoin(fishingUser.getCoin() + inventoryItem.getSellPrice());
         fishingUserMapper.updateUserCoin(fishingUser);
+
         return 0;
     }
 }
