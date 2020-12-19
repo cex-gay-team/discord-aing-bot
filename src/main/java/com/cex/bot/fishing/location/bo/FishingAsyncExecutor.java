@@ -62,7 +62,7 @@ public class FishingAsyncExecutor {
             if (wait_count == MAX_WAIT_COUNT) {
                 discordSendUtil.sendMessage(fishingUser.getUserName() + "님; 최종 결과 알려드려유; " + MAX_WAIT_COUNT + "만큼 재시도했지만 낚지도 못했어유ㅜㅜ", locationId);
             } else {
-                FishRarity rarity = FishRarity.getRandomFishRarity(random.nextInt(100));
+                FishRarity rarity = FishRarity.getRandomFishRarity(random.nextInt(1000));
                 List<Fishes> rareFishList = locationBo.getLocationFishList(rarity.name(), location.getLocationId());
                 Fishes fishes = rareFishList.get(random.nextInt(rareFishList.size()));
 
@@ -84,7 +84,7 @@ public class FishingAsyncExecutor {
                             .build();
                     objectItemBo.saveItem(inventoryItem);
                     discordSendUtil.sendMessage(fishingUser.getUserName() + "님; 낚시 결과 알려드려유;" + fishes.getName() + "(" +  fishes.getRarity() + ") 을(를) 잡았어요!", locationId);
-//                    discordSendUtil.sendFile(fishes.getFileName(), locationId);
+                    discordSendUtil.sendFile(fishes.getFileName(), locationId);
                 } else {
                     discordSendUtil.sendMessage(fishingUser.getUserName() + "님; 낚시 결과 알려드려유;" + fishes.getName() + "(" +  fishes.getRarity() + ") 을(를) 낚을뻔 했는데,,, 실패!", locationId);
                 }

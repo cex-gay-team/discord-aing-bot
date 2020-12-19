@@ -45,6 +45,7 @@ public class FishingBotSellCommand implements DiscordBaseCommand {
                         + "현재 보유하신 코인은 " + fishingUser.getCoin() + sellCoin + " 입니다.\n";
             } else {
                 message = "해당 인벤토리 번호의 아이템이 없어요. \n 현재 판매가능 아이템은 아래와 같아요.\n" +
+                        "No | 아이템명 | 가격 | 개수 \n" +
                         getPossibleSellListString(myInventoryList);
             }
         } else {

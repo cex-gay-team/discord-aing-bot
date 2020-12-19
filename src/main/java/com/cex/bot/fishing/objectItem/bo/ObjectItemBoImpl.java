@@ -34,11 +34,12 @@ public class ObjectItemBoImpl implements ObjectItemBo {
         int searchCount = 3;
 
         for (InventoryItem item : myInventoryItems) {
+
             if (item.getInventoryNo() != searchCount && item.getInventoryNo() > 2) {
                 break;
+            } else if (item.getInventoryNo() > 2) {
+                searchCount++;
             }
-
-            searchCount++;
         }
 
         inventoryItem.setInventoryNo(searchCount);

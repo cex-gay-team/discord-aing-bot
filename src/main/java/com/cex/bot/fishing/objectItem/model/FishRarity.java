@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum FishRarity {
-    SSS(1)
-    , SS(3)
-    , S(6)
-    , A(10)
-    , B(15)
-    , C(30)
-    , D(35);
+    SSS(2)
+    , SS(8)
+    , S(15)
+    , A(45)
+    , B(130)
+    , C(300)
+    , D(500);
     private static final List<FishRarity> sortedFishRarity;
 
     static {

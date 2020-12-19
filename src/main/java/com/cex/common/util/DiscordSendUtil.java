@@ -1,10 +1,8 @@
 package com.cex.common.util;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -29,8 +27,9 @@ public class DiscordSendUtil {
         JDA discordJda = (JDA) applicationContext.getBean("discordJDA");
         TextChannel textChannel = discordJda.getTextChannelById(channelId);
         File file = new File(servletContext.getRealPath("/WEB-INF/images/" + fileName));
-
-        textChannel.sendFile(file, AttachmentOption.SPOILER).queue();
+        if(file.exists()) {
+            textChannel.sendFile(file).queue();
+        }
     }
 
     public void moveUser(long channelId, long userId) {

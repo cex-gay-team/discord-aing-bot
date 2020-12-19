@@ -11,5 +11,5 @@ public class Fishes {
     private float defaultPrice;
     private boolean fish;
     private String remark;
-    private String fileName = "Test.jpg";
+    private String fileName;
 }

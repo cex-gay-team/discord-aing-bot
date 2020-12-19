@@ -22,6 +22,7 @@
              , fish.price AS defaultPrice
              , fish.is_fish AS fish
              , fish.remark AS remark
+             , fish.file_name AS fileName
           FROM fishes fish
     INNER JOIN locations_fishes locationFish
             ON locationFish.fish_id = fish.id
