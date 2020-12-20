@@ -13,7 +13,7 @@ function deriveFromPin(pin: string) {
     return {iv, secretKey};
 }
 
-export async function encrypt(pin: string, target: string, keyFilePath: string, tagFilePath: string) {
+export async function encrypt(pin: string, target: string, keyFilePath: string, tagFilePath: string): Promise<string> {
     const {secretKey, iv} = deriveFromPin(pin);
 
     const cipher = crypto.createCipheriv(SYMMETRIC_CIPHER_ALGORITHM, secretKey, iv);
@@ -29,7 +29,7 @@ export async function encrypt(pin: string, target: string, keyFilePath: string, 
     return encryptedData;
 }
 
-export async function decrypt(pin: string, keyFilePath: string, tagFilePath: string) {
+export async function decrypt(pin: string, keyFilePath: string, tagFilePath: string): Promise<string> {
     const {secretKey, iv} = deriveFromPin(pin);
 
     if (!fs.existsSync(keyFilePath) || !fs.existsSync(tagFilePath)) {

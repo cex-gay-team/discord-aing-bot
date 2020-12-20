@@ -3,5 +3,5 @@
     "ignore": ["src/**/*.spec.ts"],
     "ext": "ts,json",
     "delay": 500,
-    "exec": "npm run start"
+    "exec": "npm run start:dev"
 }
