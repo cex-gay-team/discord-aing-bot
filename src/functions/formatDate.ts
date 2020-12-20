@@ -1,4 +1,3 @@
-
 function parseDateByHMS(args: string[]): number {
     const fullString = args.join();
 
@@ -13,14 +12,18 @@ function parseDateByHMS(args: string[]): number {
 function parseDateSplitColon(args: string[]): number {
     const targetString = args[0];
 
-    const numbers = (targetString.match(/:?\d{1,2}/g) || []).map((target) => target.replace(':', ''));
+    if (targetString.match(/^[:\d]+$/)) {
+        const numbers = (targetString.match(/:?\d{1,2}/g) || []).map((target) => target.replace(':', ''));
 
-    const second = parseInt(numbers.pop() || '') || 0;
-    const minute = parseInt(numbers.pop() || '') || 0;
-    const hour = parseInt(numbers.pop() || '') || 0;
+        const second = parseInt(numbers.pop() || '') || 0;
+        const minute = parseInt(numbers.pop() || '') || 0;
+        const hour = parseInt(numbers.pop() || '') || 0;
 
-    return hour * 3600 + minute * 60 + second;
+        return hour * 3600 + minute * 60 + second;
+    }
+    return 0;
 }
+
 /**
  * 타이머 입력은 세가지 방식을 따른다.
  *
@@ -34,9 +37,9 @@ function parseDateSplitColon(args: string[]): number {
  * @private
  */
 export default function formatDate(args: string[]): number {
-    const maybeSeconds = parseInt(args[0]);
-    if (Number.isInteger(maybeSeconds)) {
-        return maybeSeconds;
+    const maybeSeconds = args[0].match(/^\d+$/)?.[0];
+    if (maybeSeconds && Number.isInteger(parseInt(maybeSeconds))) {
+        return parseInt(maybeSeconds);
     }
 
     const colonSplitSeconds = parseDateSplitColon(args);
@@ -45,7 +48,7 @@ export default function formatDate(args: string[]): number {
     }
 
     const messageSplitSeconds = parseDateByHMS(args);
-    if (colonSplitSeconds !== 0) {
+    if (messageSplitSeconds !== 0) {
         return messageSplitSeconds;
     }
 

@@ -2,7 +2,7 @@ import {IBaseCommand} from './base/BaseCommand';
 import TimeService from '@services/TimeService';
 import type {Message} from 'discord.js';
 import NotSupportCommandError from '@errors/NotSupportCommandError';
-import formatDate from "../functions/formatDate";
+import formatDate from '../functions/formatDate';
 
 type TimerCommands = {
     type: string;
@@ -77,22 +77,6 @@ class Timer implements IBaseCommand {
 
     private formatTimerName(timerName?: string) {
         return timerName ? `${timerName} ` : '';
-    }
-
-    /**
-     * 타이머 입력은 세가지 방식을 따른다.
-     *
-     * 1. 초만 입력하기
-     * 2. 1h, 2m, 3s 와 같이 세가지의 값을 입력하기 (어떤 조합도 가능하며, 무조건 순서는 hms 순이다.)
-     * 3. hh:mm:ss 로 입력하기
-     *
-     * @param args 위 셋중 하나
-     * @throws InvalidFormatError
-     * @private
-     */
-    private parseDateArgument(args: string[]): number {
-
-        return 0;
     }
 }
 
