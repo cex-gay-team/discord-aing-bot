@@ -9,7 +9,7 @@ const glob = promisify(_glob);
 const PREFIX_LENGTH_LIMIT = 3; // prefix 가 너무 길면 좀 그렇잖아
 
 class MessageGateway {
-    private _prefix = '@';
+    private _prefix = '!';
     private commands: { [command: string]: BaseCommand } = {};
 
     get prefix() {

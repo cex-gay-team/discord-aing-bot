@@ -13,10 +13,15 @@ type TimerCommands = {
 type StartTimerCommand = Required<Pick<TimerCommands, 'timeout'>> & Omit<TimerCommands, 'type'>;
 type StopTimerCommand = Omit<TimerCommands, 'type' | 'timeout'>;
 
+const timerSubCommand = {
+    start: '시작',
+    stop: '정지'
+};
+
 class Timer implements IBaseCommand {
-    command = 'timer';
+    command = '타이머';
     validators = [];
-    private supportSubCommands = ['start', 'stop'];
+    private supportSubCommands = [timerSubCommand.start, timerSubCommand.stop];
 
     /*
      * !timer name timeout || !timer timeout (name=default)
@@ -24,11 +29,11 @@ class Timer implements IBaseCommand {
     async execute(message: Message): Promise<void> {
         const timeInfo = this.parseMessage(message.content);
         switch (timeInfo.type) {
-            case 'start': {
+            case timerSubCommand.start: {
                 this.startTimer(message, timeInfo as StartTimerCommand);
                 break;
             }
-            case 'stop': {
+            case timerSubCommand.stop: {
                 this.stopTimer(message, timeInfo);
             }
         }
@@ -67,6 +72,7 @@ class Timer implements IBaseCommand {
         result.type = type;
 
         if (Number.isNaN(parseInt(maybeTimerName))) {
+            result.timerName = maybeTimerName;
             result.timeout = formatDate(args);
         } else {
             result.timeout = formatDate([maybeTimerName, ...args]);
