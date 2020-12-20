@@ -153,4 +153,10 @@
          WHERE id = #{inventoryId}
            AND user_id = #{fishUserId}
     </delete>
+
+    <select id="selectMyInventoryItemCount" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+          FROM users_object
+         WHERE user_id = #{userId}
+    </select>
 </mapper>

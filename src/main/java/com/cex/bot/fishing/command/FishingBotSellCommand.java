@@ -7,11 +7,11 @@ import com.cex.bot.fishing.user.model.InventoryItem;
 import com.cex.common.util.DiscordSendUtil;
 import com.cex.common.util.DiscordUtil;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,27 +29,40 @@ public class FishingBotSellCommand implements DiscordBaseCommand {
     public void execute(MessageReceivedEvent event) {
         DiscordUtil discordUtil = DiscordUtil.getInstance();
         String message = event.getMessage().getContentRaw();
-        String[] parameters = discordUtil.parsingParam(message, 2);
+        String[] parameters = discordUtil.parsingParam(message);
         FishingUser fishingUser = fishingUserBo.getFishingUserByDiscordId(event.getAuthor().getIdLong());
-        String inventoryNo = Objects.isNull(parameters[0]) ? "" : parameters[0];
         List<InventoryItem> myInventoryList = objectItemBo.getMyItems(fishingUser.getUserId()).stream()
                 .filter(inventoryItem -> inventoryItem.getInventoryNo() > MOUNTING_INVENTORY_MAX_NO).collect(Collectors.toList());
 
-        if (discordUtil.isNumeric(inventoryNo) && Integer.parseInt(inventoryNo) > MOUNTING_INVENTORY_MAX_NO) {
-            Optional<InventoryItem> sellItem = myInventoryList.stream().filter(inventoryItem -> inventoryItem.getInventoryNo() == Integer.parseInt(inventoryNo)).findFirst();
-            if (sellItem.isPresent()) {
-                InventoryItem item = sellItem.get();
-                int sellCoin = objectItemBo.sellItem(fishingUser, item);
-
-                message = fishingUser.getUserName() + "님!. " + item.getObjectName() + "을 " + item.getSellPrice() + "에 팔았어요!\n"
-                        + "현재 보유하신 코인은 " + fishingUser.getCoin() + sellCoin + " 입니다.\n";
-            } else {
-                message = "해당 인벤토리 번호의 아이템이 없어요. \n 현재 판매가능 아이템은 아래와 같아요.\n" +
-                        "No | 아이템명 | 가격 | 개수 \n" +
-                        getPossibleSellListString(myInventoryList);
+        float currentCoin = fishingUser.getCoin();
+        for (String inventoryNo : parameters) {
+            if (discordUtil.isNumeric(inventoryNo) && Integer.parseInt(inventoryNo) > MOUNTING_INVENTORY_MAX_NO) {
+                Optional<InventoryItem> sellItem = myInventoryList.stream().filter(inventoryItem -> inventoryItem.getInventoryNo() == Integer.parseInt(inventoryNo))
+                        .filter(inventoryItem -> !inventoryItem.isSellFlag()).findFirst();
+                if (sellItem.isPresent()) {
+                    InventoryItem item = sellItem.get();
+                    objectItemBo.sellItem(fishingUser, item);
+                    item.setSellFlag(true);
+                }
             }
+        }
+
+        List<InventoryItem> selledInventoryList = myInventoryList.stream()
+                .filter(InventoryItem::isSellFlag)
+                .collect(Collectors.toList());
+
+        if (CollectionUtils.isNotEmpty(selledInventoryList)) {
+            float totalSellPrice = 0;
+            message = fishingUser.getUserName() + "님!. 판매한 아이템 목록은 아래와 같아요.\n"
+                    + "아이템 명 | 판매가격 \n";
+            for (InventoryItem item : selledInventoryList) {
+                totalSellPrice += item.getSellPrice();
+                message += item.getObjectName() + " | " + item.getSellPrice() + "\n";
+            }
+
+            message += "이렇게 총  " + totalSellPrice + " 코인에 판매를 하고 현재 " + (currentCoin + totalSellPrice) + " 만큼 보유하시고 계세요.\n";
         } else {
-            message = "판매는 !sell [인벤토리번호] 로 판매할 수 있어요. \n 현재 판매가능 아이템은 아래와 같아요.\n"
+            message = "판매는 !sell [인벤토리번호] [인벤토리번호]...로 판매할 수 있어요. \n 현재 판매가능 아이템은 아래와 같아요.\n"
                     + "No | 아이템명 | 가격 | 개수 \n"
                     + getPossibleSellListString(myInventoryList);
         }
@@ -61,7 +74,7 @@ public class FishingBotSellCommand implements DiscordBaseCommand {
         StringBuilder message = new StringBuilder();
         if (myInventoryItemList.size() > 0) {
             for (InventoryItem inventoryItem : myInventoryItemList) {
-                message.append(inventoryItem.getInventoryNo() + " | " + inventoryItem.getObjectName() + " | " + inventoryItem.getSellPrice() + " | "+ inventoryItem.getCount() + "\n");
+                message.append(inventoryItem.getInventoryNo() + " | " + inventoryItem.getObjectName() + " | " + inventoryItem.getSellPrice() + " | " + inventoryItem.getCount() + "\n");
             }
         } else {
             message.append("판매가능한 아이템이 없어요.\n");

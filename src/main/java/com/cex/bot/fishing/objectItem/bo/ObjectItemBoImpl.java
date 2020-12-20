@@ -187,11 +187,16 @@ public class ObjectItemBoImpl implements ObjectItemBo {
 
     @Override
     @Transactional
-    public int sellItem(FishingUser fishingUser, InventoryItem inventoryItem) {
+    public float sellItem(FishingUser fishingUser, InventoryItem inventoryItem) {
         objectItemMapper.deleteInventoryItem(inventoryItem);
         fishingUser.setCoin(fishingUser.getCoin() + inventoryItem.getSellPrice());
         fishingUserMapper.updateUserCoin(fishingUser);
 
-        return 0;
+        return inventoryItem.getSellPrice();
+    }
+
+    @Override
+    public int getMyItemsCount(int userId) {
+        return objectItemMapper.selectMyInventoryItemCount(userId);
     }
 }

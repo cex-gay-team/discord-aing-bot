@@ -20,7 +20,7 @@ public class InventoryItem {
     private float objectLength;
     private int count;
     private int inventoryNo;
-
+    private boolean sellFlag;
     public float getSellPrice() {
         if(ObjectType.getObjectTypeByCode(this.objectType) == ObjectType.BAITS) {
             return Math.round(this.objectPrice / 30.0f * (float)count);

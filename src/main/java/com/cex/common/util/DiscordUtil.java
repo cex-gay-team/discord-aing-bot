@@ -55,6 +55,11 @@ public class DiscordUtil {
 
         return Arrays.copyOfRange(contentRaw.split(" "), 1, langth);
     }
+    public String[] parsingParam(String contentRaw) {
+        String[] params = contentRaw.split(" ");
+
+        return Arrays.copyOfRange(params, 1, params.length);
+    }
 
     public boolean isNumeric(String value) {
         if(Objects.isNull(value)) {

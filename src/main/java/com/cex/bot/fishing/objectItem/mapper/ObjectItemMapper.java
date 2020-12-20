@@ -35,4 +35,6 @@ public interface ObjectItemMapper {
     void updateInventoryItemNo(InventoryItem changeItem);
 
     void deleteInventoryItem(InventoryItem inventoryItem);
+
+    int selectMyInventoryItemCount(int userId);
 }
